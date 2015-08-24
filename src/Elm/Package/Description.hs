@@ -176,6 +176,7 @@ instance ToJSON Description where
         , "dependencies" .= jsonDeps (dependencies d)
         , "elm-version" .= elmVersion d
         ] ++ if natives d then ["native-modules" .= True] else []
+          ++ if null $ extraDependencies d then ["extra-dependencies" .= Map.fromList (extraDependencies d)] else []
     where
       jsonDeps deps =
           Map.fromList $ map (first (T.pack . N.toString)) deps
