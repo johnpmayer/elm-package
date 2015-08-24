@@ -38,6 +38,7 @@ data Description = Description
     , exposed :: [Module.Name]
     , natives :: Bool
     , dependencies :: [(N.Name, C.Constraint)]
+    , extraDependencies :: [(String, FilePath)]
     }
 
 
@@ -54,6 +55,7 @@ defaultDescription =
     , exposed = []
     , natives = False
     , dependencies = []
+    , extraDependencies = []
     }
 
 
@@ -204,7 +206,9 @@ instance FromJSON Description where
 
             natives <- maybe False id <$> obj .:? "native-modules"
 
-            return $ Description name repo version elmVersion summary license sourceDirs exposed natives deps
+            extraDeps <- maybe [] Map.toList <$> obj .:? "extra-dependencies"
+
+            return $ Description name repo version elmVersion summary license sourceDirs exposed natives deps extraDeps
 
     parseJSON _ = mzero
 
